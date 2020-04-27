@@ -3,7 +3,7 @@ trap 'kill $(jobs -p)' EXIT
 
 # 0. generate xorg.conf
 BUS_ID=$(nvidia-xconfig --query-gpu-info | grep 'PCI BusID' | sed -r 's/\s*PCI BusID : PCI:(.*)/\1/')
-nvidia-xconfig -a --virtual=1920x1200 --allow-empty-initial-configuration --enable-all-gpus --busid $BUS_ID
+nvidia-xconfig -a --virtual=$RESOLUTION --allow-empty-initial-configuration --enable-all-gpus --busid $BUS_ID
 
 # 1. launch X server
 Xorg :0 &
@@ -24,4 +24,6 @@ sleep 2  # wait for the server gets ready
 sleep 2
 
 echo 'running noVNC at http://localhost:8081/vnc.html?host=localhost&port=8081'
-
+export DISPLAY=:0
+xsetroot -solid grey
+/usr/bin/lxsession -s Lubuntu

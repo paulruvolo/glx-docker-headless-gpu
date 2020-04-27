@@ -20,6 +20,18 @@ ENV LC_ALL en_US.UTF-8
 # (1) Install Xorg and NVIDIA driver inside the container
 # Almost same procesure as nvidia/driver https://gitlab.com/nvidia/driver/blob/master/ubuntu16.04/Dockerfile
 
+RUN apt-get update -y && \
+    apt-get install -y lsb-release gnupg2 apt-utils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list && \
+    apt-key adv --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
+    apt-get update -y && \
+    apt-get install -y ros-melodic-desktop-full && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # (1-1) Install prerequisites
 RUN dpkg --add-architecture i386 && \
     apt-get update && apt-get install -y --no-install-recommends \
@@ -37,6 +49,8 @@ RUN dpkg --add-architecture i386 && \
         libc6:i386 \
         pkg-config \
         nvidia-driver-435 \
+        lubuntu-desktop \
+        terminator \
         libelf-dev && \
     rm -rf /var/lib/apt/lists/*
 
@@ -109,6 +123,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       dbus-x11 \
       libdbus-c++-1-0v5 && \
     rm -rf /var/lib/apt/lists/*
+
+# Setup catkin workspace and ROS environment.
+RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && \
+                  mkdir -p ~/catkin_ws/src && \
+                  cd ~/catkin_ws/src && \
+                  git clone -b qea https://github.com/comprobo18/comprobo18.git && \
+                  cd .. && \
+                  catkin_make && \
+                  echo 'source ~/catkin_ws/devel/setup.bash' >> ~/.bashrc"
+
+ENV GAZEBO_MODEL_PATH=/root/.gazebo/models
+RUN /bin/bash -c "mkdir -p ~/.gazebo/models; cp -r ~/catkin_ws/src/comprobo18/neato_gazebo/model/* ~/.gazebo/models"
+RUN /bin/bash -c "mkdir -p ~/.gazebo/models/mobile_base && \
+                  mkdir -p ~/.gazebo/models/mobile_base_with_camera && \
+                  source ~/catkin_ws/devel/setup.bash && \
+                  cp ~/catkin_ws/src/comprobo18/neato_robot/neato_description/sdf/neato.sdf ~/.gazebo/models/mobile_base/model.sdf && \
+                  cp ~/catkin_ws/src/comprobo18/neato_robot/neato_description/sdf/neato_with_camera.sdf ~/.gazebo/models/mobile_base_with_camera/model.sdf && \
+                  cp ~/catkin_ws/src/comprobo18/neato_robot/neato_description/model.config ~/.gazebo/models/mobile_base && \
+                  cp ~/catkin_ws/src/comprobo18/neato_robot/neato_description/model_with_camera.config ~/.gazebo/models/mobile_base_with_camera/model.config && \
+                  cp -r ~/catkin_ws/src/comprobo18/neato_robot/neato_description/meshes ~/.gazebo/models/mobile_base"
 
 # (3) Run Xorg server + x11vnc + X applications
 # see run.sh for details
