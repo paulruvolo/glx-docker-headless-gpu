@@ -36,6 +36,7 @@ RUN dpkg --add-architecture i386 && \
         kmod \
         libc6:i386 \
         pkg-config \
+        nvidia-driver-435 \
         libelf-dev && \
     rm -rf /var/lib/apt/lists/*
 
@@ -51,30 +52,6 @@ RUN apt-get update && apt-get install -y \
 # Same command as nvidia/driver, except --x-{prefix,module-path,library-path,sysconfig-path} are omitted in order to make use default path and enable X drivers.
 # Driver version must be equal to host's driver
 # Install the userspace components and copy the kernel module sources.
-ENV DRIVER_VERSION=410.129-diagnostic
-ENV DRIVER_VERSION_PATH=410.129
-RUN cd /tmp && \
-    curl -fSsl -O https://us.download.nvidia.com/tesla/$DRIVER_VERSION_PATH/NVIDIA-Linux-x86_64-$DRIVER_VERSION.run && \
-    sh NVIDIA-Linux-x86_64-$DRIVER_VERSION.run -x && \
-    cd NVIDIA-Linux-x86_64-$DRIVER_VERSION && \
-    ./nvidia-installer --silent \
-                       --no-kernel-module \
-                       --install-compat32-libs \
-                       --no-nouveau-check \
-                       --no-nvidia-modprobe \
-                       --no-rpms \
-                       --no-backup \
-                       --no-check-for-alternate-installs \
-                       --no-libglx-indirect \
-                       --no-glvnd-egl-client \
-                       --no-glvnd-glx-client \
-                       --no-install-libglvnd && \
-    mkdir -p /usr/src/nvidia-$DRIVER_VERSION && \
-    mv LICENSE mkprecompiled kernel /usr/src/nvidia-$DRIVER_VERSION && \
-    sed '9,${/^\(kernel\|LICENSE\)/!d}' .manifest > /usr/src/nvidia-$DRIVER_VERSION/.manifest
-                       # this option cannot be used on newer driver
-                       # --no-glvnd-egl-client \
-                       # --no-glvnd-glx-client \
 
 # (2) Configurate Xorg
 # (2-1) Install some necessary softwares
