@@ -106,7 +106,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # sound driver and GTK library
 # If you want to use sounds on docker, try `pulseaudio --start`
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      alsa pulseaudio libgtk2.0-0 && \
+      alsa pulseaudio libgtk2.0-0 lxde && \
     rm -rf /var/lib/apt/lists/*
 
 # novnc
@@ -117,10 +117,12 @@ RUN wget https://github.com/novnc/noVNC/archive/v1.1.0.zip && \
   git clone https://github.com/novnc/websockify /noVNC-1.1.0/utils/websockify
 
 # Xorg segfault error
+# TODO: investigate this.  We are mapping the dbus system socket to get around an error that we encountered (maybe this fix is no longer needed?).
 # dbus-core: error connecting to system bus: org.freedesktop.DBus.Error.FileNotFound (Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory)
 # related? https://github.com/Microsoft/WSL/issues/2016
 RUN apt-get update && apt-get install -y --no-install-recommends \
       dbus-x11 \
+      htop \
       libdbus-c++-1-0v5 && \
     rm -rf /var/lib/apt/lists/*
 
@@ -143,6 +145,34 @@ RUN /bin/bash -c "mkdir -p ~/.gazebo/models/mobile_base && \
                   cp ~/catkin_ws/src/comprobo18/neato_robot/neato_description/model.config ~/.gazebo/models/mobile_base && \
                   cp ~/catkin_ws/src/comprobo18/neato_robot/neato_description/model_with_camera.config ~/.gazebo/models/mobile_base_with_camera/model.config && \
                   cp -r ~/catkin_ws/src/comprobo18/neato_robot/neato_description/meshes ~/.gazebo/models/mobile_base"
+
+# Defeat screen locking and power management
+RUN mv /etc/xdg/autostart/light-locker.desktop /etc/xdg/autostart/light-locker.desktop_bak
+RUN mv /etc/xdg/autostart/xfce4-power-manager.desktop /etc/xdg/autostart/xfce4-power-manager.desktop_bak
+COPY terminator.desktop /etc/xdg/autostart/
+
+# fix some other errors that tend to pop up and start a terminal at launch time
+RUN rm /etc/xdg/autostart/lxpolkit.desktop && \
+    rm /etc/xdg/autostart/update-notifier.desktop && \
+    mv /usr/bin/lxpolkit /usr/bin/lxpolkit.ORIG
+
+RUN /bin/bash -c "mkdir -p /root/Desktop"
+
+COPY self.pem /root/self.pem
+COPY launch /root/
+COPY matlab /root/
+
+RUN /bin/bash -c "cd /tmp && \
+                  git clone https://github.com/qeacourse/RoboNinjaWarrior && \
+                  cp -r /tmp/RoboNinjaWarrior/Sample_code ~ && \
+		  rm -rf /tmp/RoboNinjaWarrior"
+
+RUN echo "echo \"type the command \\\"launch neato_world\\\" to launch the simulator\"" >> /root/.bashrc
+RUN echo "echo \"for example, the command \\\"launch bod_volcano\\\" will load the world for the Bridge of Doom\"" >> /root/.bashrc
+
+COPY index.html /noVNC-1.1.0/index.html
+
+ENV PATH /root:${PATH}:/usr/local/MATLAB/R2020a/bin
 
 # (3) Run Xorg server + x11vnc + X applications
 # see run.sh for details
