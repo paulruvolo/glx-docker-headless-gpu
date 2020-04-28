@@ -1,7 +1,7 @@
 #!/bin/bash
 docker build -t sim . && \
 docker run --privileged -it --rm --gpus all \
-  -p 8081:8081 \
+  -p 40001:8081 \
   -e RESOLUTION=1920x1080 \
   -e VNCPASS=pass \
   --mount type=bind,source=/usr/local/MATLAB,target=/usr/local/MATLAB,readonly \
