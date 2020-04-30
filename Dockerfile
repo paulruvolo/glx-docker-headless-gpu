@@ -170,6 +170,7 @@ RUN /bin/bash -c "cd /tmp && \
 RUN echo "echo \"type the command \\\"launch neato_world\\\" to launch the simulator\"" >> /root/.bashrc
 RUN echo "echo \"for example, the command \\\"launch bod_volcano\\\" will load the world for the Bridge of Doom\"" >> /root/.bashrc
 
+# Mostly just preserved for posterity (could remove)
 COPY index.html /noVNC-1.1.0/index.html
 
 ENV PATH /root:${PATH}:/usr/local/MATLAB/R2020a/bin

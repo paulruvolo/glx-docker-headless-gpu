@@ -8,24 +8,4 @@ nvidia-xconfig -a --virtual=$RESOLUTION --allow-empty-initial-configuration --en
 # fix DPI
 sed -i.bak -e 's/"DPMS"/"DPMS"\n    Option "DPI" "96x96"\n/' /etc/X11/xorg.conf
 # 1. launch X server
-Xorg :0 &
-sleep 5  # wait for the server gets ready
-
-# 2. start x11 and vnc connection
-# to inspect logs in detail, use --verbose
-x11vnc -display :0 -shared -forever -repeat -rfbport 5900 &
-sleep 2  # wait for the server gets ready
-
-# 2.5 start audio
-# this is not required.
-# pulseaudio --start
-# sleep 2
-
-# 3. start noVNC
-/noVNC-1.1.0/utils/launch.sh --vnc localhost:5900 --listen 8081 &
-sleep 2
-
-echo 'running noVNC at http://localhost:8081/vnc.html?host=localhost&port=8081'
-export DISPLAY=:0
-xsetroot -solid grey
-/usr/bin/lxsession -s Lubuntu
+Xorg :0
