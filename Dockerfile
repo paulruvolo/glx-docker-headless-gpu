@@ -17,8 +17,6 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-# (1) Install Xorg and NVIDIA driver inside the container
-# Almost same procesure as nvidia/driver https://gitlab.com/nvidia/driver/blob/master/ubuntu16.04/Dockerfile
 
 RUN apt-get update -y && \
     apt-get install -y lsb-release gnupg2 apt-utils && \
@@ -52,6 +50,35 @@ RUN dpkg --add-architecture i386 && \
         terminator \
         libelf-dev && \
     rm -rf /var/lib/apt/lists/*
+
+	# (1-3) Install NVIDIA drivers, including X graphic drivers
+# Same command as nvidia/driver, except --x-{prefix,module-path,library-path,sysconfig-path} are omitted in order to make use default path and enable X drivers.
+# Driver version must be equal to host's driver
+# Install the userspace components and copy the kernel module sources.
+ENV DRIVER_VERSION=418.87.00
+ENV DRIVER_VERSION_PATH=418.87
+RUN cd /tmp && \
+    curl -fSsl -O https://us.download.nvidia.com/tesla/$DRIVER_VERSION_PATH/NVIDIA-Linux-x86_64-$DRIVER_VERSION.run && \
+    sh NVIDIA-Linux-x86_64-$DRIVER_VERSION.run -x && \
+    cd NVIDIA-Linux-x86_64-$DRIVER_VERSION && \
+    ./nvidia-installer --silent \
+                       --no-kernel-module \
+                       --install-compat32-libs \
+                       --no-nouveau-check \
+                       --no-nvidia-modprobe \
+                       --no-rpms \
+                       --no-backup \
+                       --no-check-for-alternate-installs \
+                       --no-libglx-indirect \
+                       --no-glvnd-egl-client \
+                       --no-glvnd-glx-client \
+                       --no-install-libglvnd && \
+    mkdir -p /usr/src/nvidia-$DRIVER_VERSION && \
+    mv LICENSE mkprecompiled kernel /usr/src/nvidia-$DRIVER_VERSION && \
+    sed '9,${/^\(kernel\|LICENSE\)/!d}' .manifest > /usr/src/nvidia-$DRIVER_VERSION/.manifest
+                       # this option cannot be used on newer driver
+                       # --no-glvnd-egl-client \
+                       # --no-glvnd-glx-client \
 
 # (1-2) Install xorg server and xinit BEFORE INSTALLING NVIDIA DRIVER.
 # After this installation, command Xorg and xinit can be used in the container
