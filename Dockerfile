@@ -48,7 +48,6 @@ RUN dpkg --add-architecture i386 && \
         kmod \
         libc6:i386 \
         pkg-config \
-        nvidia-driver-435 \
         lubuntu-desktop \
         terminator \
         libelf-dev && \
