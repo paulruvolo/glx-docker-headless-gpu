@@ -1,5 +1,2 @@
-* Push images to Amazon Container Registration (ECR)
-* Ensure that DBUS is running inside of the justx container https://georgik.rocks/how-to-start-d-bus-in-docker-container/
+* Validate that not installing driver fixes errors with using NVIDIA
 * Add MATLAB installation to the docker container turbovnc
-* Find a way to start X server and share with turbovnc containers
-* Find a way to wait for justx to be up before starting turbovnc containers
