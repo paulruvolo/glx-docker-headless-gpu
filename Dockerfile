@@ -68,11 +68,7 @@ RUN cd /tmp && \
                        --no-nvidia-modprobe \
                        --no-rpms \
                        --no-backup \
-                       --no-check-for-alternate-installs \
-                       --no-libglx-indirect \
-                       --no-glvnd-egl-client \
-                       --no-glvnd-glx-client \
-                       --no-install-libglvnd && \
+                       --no-check-for-alternate-installs && \
     mkdir -p /usr/src/nvidia-$DRIVER_VERSION && \
     mv LICENSE mkprecompiled kernel /usr/src/nvidia-$DRIVER_VERSION && \
     sed '9,${/^\(kernel\|LICENSE\)/!d}' .manifest > /usr/src/nvidia-$DRIVER_VERSION/.manifest
