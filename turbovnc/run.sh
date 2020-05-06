@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# wait for X0 to become available
-while [[ ! -S /tmp/.X11-unix/X0 ]]
+if [[ -z "${WAITX}" ]]; then
+  WAITX="X0"
+fi
+
+# wait for a particular X socket to become available
+while [[ ! -S /tmp/.X11-unix/${WAITX} ]]
 do
     sleep 5
 done
