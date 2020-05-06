@@ -173,6 +173,16 @@ RUN mv /etc/xdg/autostart/light-locker.desktop /etc/xdg/autostart/light-locker.d
 RUN mv /etc/xdg/autostart/xfce4-power-manager.desktop /etc/xdg/autostart/xfce4-power-manager.desktop_bak
 COPY terminator.desktop /etc/xdg/autostart/
 
+ARG SOURCEFORGE=https://sourceforge.net/projects
+ARG TURBOVNC_VERSION=2.2.4
+ARG VIRTUALGL_VERSION=2.6.3
+
+RUN cd /tmp && \
+    curl -fsSL -O ${SOURCEFORGE}/turbovnc/files/${TURBOVNC_VERSION}/turbovnc_${TURBOVNC_VERSION}_amd64.deb \
+        -O ${SOURCEFORGE}/virtualgl/files/${VIRTUALGL_VERSION}/virtualgl_${VIRTUALGL_VERSION}_amd64.deb && \
+    dpkg -i *.deb && \
+    rm -f /tmp/*.deb
+
 # fix some other errors that tend to pop up and start a terminal at launch time
 RUN rm /etc/xdg/autostart/lxpolkit.desktop && \
     rm /etc/xdg/autostart/update-notifier.desktop && \
