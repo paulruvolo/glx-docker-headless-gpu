@@ -6,6 +6,7 @@ if [ "$#" -ne 1 ]; then
 fi
 let "NO_VNC_PORT=40001 + $1"
 
+# If you use the containers in ECS, then MATLAB is already installed
 docker run --rm \
   --gpus all \
   -p $NO_VNC_PORT:8081 \

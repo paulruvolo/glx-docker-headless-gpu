@@ -1,2 +1,0 @@
-* Fix race condition for turbovnc by specifying X Display to wait on
-* Add MATLAB installation to the docker container turbovnc
