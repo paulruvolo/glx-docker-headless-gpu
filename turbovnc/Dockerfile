@@ -5,7 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Copy from old image with MATLAB using this technique
 # https://vsupalov.com/cache-docker-build-dependencies-without-volume-mounting/
-# COPY R2020a/ /usr/local/MATLAB/R2020a/
+# COPY --from=921287185969.dkr.ecr.us-east-1.amazonaws.com/robo-ninja-warrior:turbovnc /usr/local/MATLAB/R2020a /usr/local/MATLAB/R2020a
 
 # Precede bash on all new terminator shells with vglrun so that 3d graphics apps will use the GPU
 RUN perl -pi -e 's/^Exec=terminator$/Exec=terminator -e "vglrun bash"/g' /usr/share/applications/terminator.desktop	
