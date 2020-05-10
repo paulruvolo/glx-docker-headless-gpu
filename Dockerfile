@@ -122,11 +122,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libvulkan1 vulkan-utils && \
     rm -rf /var/lib/apt/lists/*
 
-# for test
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        firefox openbox && \
-    rm -rf /var/lib/apt/lists/*
-
 # sound driver and GTK library
 # If you want to use sounds on docker, try `pulseaudio --start`
 RUN apt-get update && apt-get install -y --no-install-recommends \
