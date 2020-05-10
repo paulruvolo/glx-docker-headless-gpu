@@ -19,14 +19,16 @@ ENV LC_ALL en_US.UTF-8
 
 
 RUN apt-get update -y && \
-    apt-get install -y lsb-release gnupg2 apt-utils && \
+    apt-get install -y lsb-release gnupg2 apt-utils python-pip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list && \
     apt-key adv --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
     apt-get update -y && \
-    apt-get install -y ros-melodic-desktop-full && \
+    apt-get install -y ros-melodic-desktop-full \
+    ros-melodic-rosbridge-suite && \
+    pip install tornado pymongo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

@@ -3,6 +3,8 @@ FROM paulruvolo/testneato
 # Supress interactive menu while installing keyboard-configuration
 ARG DEBIAN_FRONTEND=noninteractive
 
+# Copy from old image with MATLAB using this technique
+# https://vsupalov.com/cache-docker-build-dependencies-without-volume-mounting/
 # COPY R2020a/ /usr/local/MATLAB/R2020a/
 
 # Precede bash on all new terminator shells with vglrun so that 3d graphics apps will use the GPU
