@@ -28,6 +28,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc
     apt-get update -y && \
     apt-get install -y ros-melodic-desktop-full \
     ros-melodic-rosbridge-suite && \
+    ros-melodic-geographic-msgs && \
     pip install tornado pymongo && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -150,12 +151,14 @@ RUN /bin/bash -c "source /opt/ros/melodic/setup.bash && \
                   mkdir -p ~/catkin_ws/src && \
                   cd ~/catkin_ws/src && \
                   git clone -b qea https://github.com/comprobo18/comprobo18.git && \
+                  git clone https://github.com/qeacourse/vrx.git && \
                   cd .. && \
                   catkin_make && \
                   echo 'source ~/catkin_ws/devel/setup.bash' >> ~/.bashrc"
 
 ENV GAZEBO_MODEL_PATH=/root/.gazebo/models
-RUN /bin/bash -c "mkdir -p ~/.gazebo/models; cp -r ~/catkin_ws/src/comprobo18/neato_gazebo/model/* ~/.gazebo/models"
+# TODO: make a proper folder for meshes
+RUN /bin/bash -c "mkdir -p ~/.gazebo/models; cp -r ~/catkin_ws/src/comprobo18/neato_gazebo/model/* ~/.gazebo/models; cp ~/catkin_ws/src/vrx/usv_gazebo_plugins/meshes/*.stl ~/.gazebo/models/bod/meshes"
 RUN /bin/bash -c "mkdir -p ~/.gazebo/models/mobile_base && \
                   mkdir -p ~/.gazebo/models/mobile_base_with_camera && \
                   source ~/catkin_ws/devel/setup.bash && \
@@ -194,6 +197,7 @@ COPY matlab /root/
 RUN /bin/bash -c "cd /tmp && \
                   git clone https://github.com/qeacourse/RoboNinjaWarrior && \
                   cp -r /tmp/RoboNinjaWarrior/Sample_code ~ && \
+                  cp -r ~/catkin_ws/src/vrx/usv_gazebo_plugins/matlab_examples ~/matlab_boats && \
 		  rm -rf /tmp/RoboNinjaWarrior"
 
 RUN echo "echo \"type the command \\\"launch neato_world\\\" to launch the simulator\"" >> /root/.bashrc
