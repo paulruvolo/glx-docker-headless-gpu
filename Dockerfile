@@ -27,7 +27,7 @@ RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc
     apt-key adv --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654 && \
     apt-get update -y && \
     apt-get install -y ros-melodic-desktop-full \
-    ros-melodic-rosbridge-suite && \
+    ros-melodic-rosbridge-suite \
     ros-melodic-geographic-msgs && \
     pip install tornado pymongo && \
     apt-get clean && \
@@ -191,6 +191,7 @@ RUN rm /etc/xdg/autostart/lxpolkit.desktop && \
 RUN /bin/bash -c "mkdir -p /root/Desktop"
 
 COPY self.pem /root/self.pem
+COPY launch_boats /root/
 COPY launch /root/
 COPY matlab /root/
 
