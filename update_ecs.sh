@@ -13,9 +13,16 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 sed -i 's/FROM paulruvolo\/testneato/FROM justx/g' Dockerfile
 sed -i 's/# COPY --from=/COPY --from=/g' Dockerfile
 docker build -t qeasim .
+
+cd nogpu
+sed -i 's/FROM qeasimnvidia435/FROM qeasim/g' Dockerfile
+docker build -t qeasimnogpu .
+
 docker tag justx 921287185969.dkr.ecr.us-east-1.amazonaws.com/robo-ninja-warrior:latest
 docker tag qeasim 921287185969.dkr.ecr.us-east-1.amazonaws.com/robo-ninja-warrior:qeasim
+docker tag qeasimnogpu 921287185969.dkr.ecr.us-east-1.amazonaws.com/robo-ninja-warrior:qeasimnogpu
 docker push 921287185969.dkr.ecr.us-east-1.amazonaws.com/robo-ninja-warrior:latest
 docker push 921287185969.dkr.ecr.us-east-1.amazonaws.com/robo-ninja-warrior:qeasim
+docker push 921287185969.dkr.ecr.us-east-1.amazonaws.com/robo-ninja-warrior:qeasimnogpu
 
 
