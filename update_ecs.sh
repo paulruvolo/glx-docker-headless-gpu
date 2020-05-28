@@ -7,8 +7,8 @@ cd turbovnc
 # install latest aws tools
 sudo yum install -y unzip
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
+unzip -o awscliv2.zip
+sudo ./aws/install --update
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 921287185969.dkr.ecr.us-east-1.amazonaws.com
 sed -i 's/FROM paulruvolo\/testneato/FROM justx/g' Dockerfile
 sed -i 's/# COPY --from=/COPY --from=/g' Dockerfile
