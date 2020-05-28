@@ -190,6 +190,7 @@ RUN /bin/bash -c "mkdir -p /root/Desktop"
 
 COPY self.pem /root/self.pem
 COPY launch_boats /root/
+COPY launch_boats_realistic /root/
 COPY launch /root/
 COPY matlab /root/
 
