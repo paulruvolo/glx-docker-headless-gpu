@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cd ~
+
+echo "rosinit()" > startup.m
+echo "cd ~/matlab_boats" > startup.m
+echo "disp('Any code or data saved on this machine outside of MATLAB Drive might be lost.');" >> startup.m
+echo "disp('When you are done, close the terminal you ran the launch command in.');" >> startup.m
+
+echo "Launching world $world"
+/bin/bash -c "((roslaunch usv_gazebo_plugins comgame.launch) & (sleep 10; matlab))"
