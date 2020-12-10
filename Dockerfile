@@ -189,6 +189,7 @@ RUN rm /etc/xdg/autostart/lxpolkit.desktop && \
 RUN /bin/bash -c "mkdir -p /root/Desktop"
 
 COPY self.pem /root/self.pem
+COPY launch_com /root/
 COPY launch_comgame /root/
 COPY launch_boats /root/
 COPY launch_boats_realistic /root/
